@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const installCommand = 'npm install -g kana-ui';
+const installCommand = 'npm install -g kana-alya';
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -22,7 +22,7 @@ export default function Home() {
 
         <a
           className="github-link"
-          href="https://github.com/misaalya/hermes-kana-ui"
+          href="https://github.com/misaalya/kana-hermes"
           target="_blank"
           rel="noreferrer"
         >
@@ -62,7 +62,7 @@ export default function Home() {
 
           <a
             className="primary-link"
-            href="https://github.com/misaalya/hermes-kana-ui"
+            href="https://github.com/misaalya/kana-hermes"
             target="_blank"
             rel="noreferrer"
           >
@@ -73,8 +73,12 @@ export default function Home() {
       </section>
 
       <footer>
-        <span>misaalya — muhammad fikri</span>
-        <span className="footer-mark" aria-hidden="true">✦</span>
+        <span className="footer-name">misaalya · muhammad fikri</span>
+        <span className="footer-studio">
+          <span>VVO Labs</span>
+          <span aria-hidden="true">/</span>
+          <span>Hagoi Teknologi</span>
+        </span>
       </footer>
 
       <div className="toast" data-visible={copied} role="status" aria-live="polite">

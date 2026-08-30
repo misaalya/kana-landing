@@ -15,13 +15,21 @@
 html,
 body {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
   margin: 0;
   overflow: hidden;
-  background: var(--background);
+  background: linear-gradient(
+    135deg,
+    #3a3a3a 0%,
+    #292929 52%,
+    #202020 100%
+  );
 }
 
 body {
+  height: 100dvh;
+  padding: 8px;
   color: var(--ink);
   font-family: var(--font-quicksand), sans-serif;
   font-weight: 700;
@@ -41,10 +49,10 @@ a:focus-visible {
 .site-shell {
   position: relative;
   width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  min-height: 620px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
+  border-radius: 18px;
   background: radial-gradient(
     circle at 50% 40%,
     #222426 0%,
@@ -113,7 +121,15 @@ h1 {
 h1 span {
   display: block;
   padding-top: 8px;
-  color: var(--accent);
+  color: transparent;
+  background: linear-gradient(
+    100deg,
+    #67c8ff 3%,
+    #eefaff 50%,
+    #81d0ff 94%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 .hero-copy {
@@ -262,14 +278,19 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgb(255 255 255 / 35%);
+  color: rgb(255 255 255 / 48%);
   font-size: 10px;
   letter-spacing: 0.04em;
 }
 
-.footer-mark {
-  color: var(--accent);
-  font-size: 15px;
+.footer-name {
+  color: rgb(255 255 255 / 56%);
+}
+
+.footer-studio {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .toast {
@@ -338,10 +359,6 @@ footer {
 }
 
 @media (max-height: 720px) {
-  .site-shell {
-    min-height: 560px;
-  }
-
   .site-header {
     height: 68px;
   }
@@ -360,8 +377,12 @@ footer {
 }
 
 @media (max-width: 640px) {
+  body {
+    padding: 6px;
+  }
+
   .site-shell {
-    min-height: 660px;
+    border-radius: 14px;
   }
 
   .site-header {
@@ -404,5 +425,9 @@ footer {
   footer {
     bottom: 14px;
     font-size: 9px;
+  }
+
+  .footer-studio {
+    gap: 4px;
   }
 }
