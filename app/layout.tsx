@@ -9,17 +9,17 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: 'Hermes Waifu — UI for Hermes Agent',
+  title: 'kana-ui',
   description:
-    'A playful interface for Hermes Agent. Install Hermes Waifu with npm and bring your agent to life.',
+    'A playful interface for Hermes Agent. Install kana-ui with npm and bring your agent to life.',
   openGraph: {
-    title: 'Hermes Waifu — UI for Hermes Agent',
+    title: 'kana-ui',
     description: 'Your agent, with a little soul.',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Hermes Waifu — UI for Hermes Agent',
+    title: 'kana-ui',
     description: 'Your agent, with a little soul.',
   },
 };

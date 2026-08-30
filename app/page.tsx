@@ -15,16 +15,9 @@ export default function Home() {
 
   return (
     <main className="site-shell">
-      <div className="ambient ambient-one" aria-hidden="true" />
-      <div className="ambient ambient-two" aria-hidden="true" />
-      <div className="signal-grid" aria-hidden="true" />
-
       <header className="site-header">
-        <a className="brand" href="#home" aria-label="Hermes Waifu home">
-          <span className="brand-mark" aria-hidden="true">
-            <span />
-          </span>
-          <span>hermes waifu</span>
+        <a className="brand" href="#home" aria-label="kana-ui home">
+          <span>kana-ui</span>
         </a>
 
         <a
@@ -39,11 +32,6 @@ export default function Home() {
       </header>
 
       <section className="hero" id="home">
-        <div className="eyebrow">
-          <span className="status-dot" aria-hidden="true" />
-          UI for Hermes Agent
-        </div>
-
         <h1>
           Your agent,
           <span>with a little soul.</span>
@@ -78,15 +66,6 @@ export default function Home() {
           </a>
         </div>
       </section>
-
-      <div className="orbital" aria-hidden="true">
-        <span className="orbit orbit-one" />
-        <span className="orbit orbit-two" />
-        <span className="orbit orbit-three" />
-        <span className="core">H</span>
-      </div>
-
-      <div className="giant-word" aria-hidden="true">HERMES</div>
 
       <footer>
         <span>Open source · built for Hermes</span>
