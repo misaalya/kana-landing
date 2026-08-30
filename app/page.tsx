@@ -10,7 +10,7 @@ export default function Home() {
   async function copyInstallCommand() {
     await navigator.clipboard.writeText(installCommand);
     setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
+    window.setTimeout(() => setCopied(false), 2200);
   }
 
   return (
@@ -49,9 +49,14 @@ export default function Home() {
             <button
               type="button"
               onClick={copyInstallCommand}
-              aria-label="Copy npm install command"
+              disabled={copied}
+              aria-label={copied ? 'Install command copied' : 'Copy npm install command'}
+              title={copied ? 'Copied' : 'Copy'}
             >
-              {copied ? 'Copied!' : 'Copy'}
+              <span
+                className={copied ? 'check-icon' : 'copy-icon'}
+                aria-hidden="true"
+              />
             </button>
           </div>
 

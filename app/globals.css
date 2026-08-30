@@ -45,7 +45,18 @@ a:focus-visible {
   height: 100dvh;
   min-height: 620px;
   overflow: hidden;
-  background: #1a1a1a;
+  background:
+    radial-gradient(
+      ellipse 68% 54% at 50% 30%,
+      rgb(129 208 255 / 7%),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 46% 42% at 88% 88%,
+      rgb(255 255 255 / 3%),
+      transparent 70%
+    ),
+    linear-gradient(155deg, #1d1d1d 0%, #1a1a1a 48%, #17191a 100%);
 }
 
 .site-header {
@@ -77,14 +88,15 @@ a:focus-visible {
   gap: 8px;
   border-radius: 999px;
   padding: 10px 15px;
-  color: #c7c7c7;
+  color: #fff;
+  background: rgb(255 255 255 / 6%);
   font-size: 13px;
   transition: color 180ms ease, background-color 180ms ease;
 }
 
 .github-link:hover {
   color: #fff;
-  background: rgb(255 255 255 / 6%);
+  background: rgb(255 255 255 / 12%);
 }
 
 .hero {
@@ -144,9 +156,15 @@ h1 span {
 }
 
 .prompt {
+  display: grid;
+  width: 23px;
+  height: 23px;
   margin-right: 10px;
-  color: var(--accent);
-  font-size: 15px;
+  place-items: center;
+  border-radius: 7px;
+  color: #9a9a9a;
+  background: #333;
+  font-size: 13px;
 }
 
 .install-box code {
@@ -162,20 +180,64 @@ h1 span {
 }
 
 .install-box button {
+  display: grid;
   align-self: stretch;
-  min-width: 69px;
+  min-width: 42px;
+  place-items: center;
   border: 0;
   border-radius: 10px;
-  color: var(--accent);
-  background: rgb(129 208 255 / 10%);
-  font-size: 11px;
+  color: #9a9a9a;
+  background: #333;
   cursor: pointer;
   transition: background-color 180ms ease, color 180ms ease;
 }
 
-.install-box button:hover {
-  color: #111;
-  background: var(--accent);
+.install-box button:hover:not(:disabled) {
+  color: #b8b8b8;
+  background: #3d3d3d;
+}
+
+.install-box button:disabled {
+  cursor: default;
+}
+
+.copy-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.copy-icon::before,
+.copy-icon::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1.6px solid currentColor;
+  border-radius: 2px;
+}
+
+.copy-icon::before {
+  top: 1px;
+  left: 1px;
+}
+
+.copy-icon::after {
+  right: 1px;
+  bottom: 1px;
+  background: #333;
+}
+
+.install-box button:hover:not(:disabled) .copy-icon::after {
+  background: #3d3d3d;
+}
+
+.check-icon {
+  width: 12px;
+  height: 7px;
+  transform: translateY(-1px) rotate(-45deg);
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
 }
 
 .primary-link {
@@ -187,15 +249,16 @@ h1 span {
   border-radius: 14px;
   padding: 0 21px;
   color: #111;
-  background: var(--accent);
+  background: #fff;
   font-size: 12px;
   text-decoration: none;
+  transform-origin: center;
   transition: transform 180ms ease, background-color 180ms ease;
 }
 
 .primary-link:hover {
   transform: translateY(-2px);
-  background: var(--accent-hover);
+  background: #ededed;
 }
 
 footer {
@@ -236,6 +299,49 @@ footer {
 .toast[data-visible='true'] {
   transform: translate(-50%, 0);
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .primary-link {
+    animation: github-nudge 6.5s ease-in-out infinite;
+  }
+
+  .primary-link:hover,
+  .primary-link:focus-visible {
+    animation: none;
+  }
+}
+
+@keyframes github-nudge {
+  0%,
+  15%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  2% {
+    transform: translateX(-3px) rotate(-2deg);
+  }
+
+  4% {
+    transform: translateX(3px) rotate(2deg);
+  }
+
+  6% {
+    transform: translateX(-3px) rotate(-1.5deg);
+  }
+
+  8% {
+    transform: translateX(3px) rotate(1.5deg);
+  }
+
+  10% {
+    transform: translateX(-2px) rotate(-1deg);
+  }
+
+  12% {
+    transform: translateX(2px) rotate(1deg);
+  }
 }
 
 @media (max-height: 720px) {
