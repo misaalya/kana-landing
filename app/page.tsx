@@ -73,7 +73,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <span>Open source · built for Hermes</span>
+        <span>misaalya — muhammad fikri</span>
         <span className="footer-mark" aria-hidden="true">✦</span>
       </footer>
 
