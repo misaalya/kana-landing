@@ -3,7 +3,7 @@
 import { useState, type CSSProperties } from 'react';
 
 const installCommand = 'npm install -g kana-alya';
-const outlinedTitle = 'Meet Hermes,';
+const outlinedTitle = 'Kana Hermes,';
 const characterTilts = [-3, 1, -1, 2, 0, -2, 1, -1, 2, -1, 3, -2];
 
 export default function Home() {
@@ -56,7 +56,7 @@ export default function Home() {
               ),
             )}
           </span>
-          <span className="hero-title-solid">with a face and voice.</span>
+          <span className="hero-title-solid">waifu user interface</span>
         </h1>
 
         <p className="hero-copy">
