@@ -24,7 +24,7 @@ body {
 
 body {
   height: 100dvh;
-  padding: 12px;
+  padding: 20px;
   color: var(--ink);
   font-family: var(--font-quicksand), sans-serif;
   font-weight: 700;
@@ -47,8 +47,33 @@ a:focus-visible {
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 28px;
   background: var(--background);
+}
+
+.site-shell::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background-image: 
+    repeating-linear-gradient(to right, rgb(0 0 0 / 4%) 0 1px, transparent 1px 50px),
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 4%) 0 1px, transparent 1px 50px);
+  mask-image: radial-gradient(
+    ellipse 55% 55% at 50% 48%,
+    transparent 0%,
+    transparent 35%,
+    rgb(0 0 0 / 40%) 55%,
+    #000 75%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 55% 55% at 50% 48%,
+    transparent 0%,
+    transparent 35%,
+    rgb(0 0 0 / 40%) 55%,
+    #000 75%
+  );
 }
 
 .site-header {
@@ -327,20 +352,20 @@ h1 {
 footer {
   position: absolute;
   z-index: 2;
-  right: 24px;
+  right: 0;
+  left: 0;
   bottom: 20px;
-  left: 24px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 12px;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
   color: rgb(23 25 27 / 48%);
   font-size: 10px;
   letter-spacing: 0.04em;
 }
 
-.footer-name {
-  color: rgb(23 25 27 / 62%);
-}
+
 
 .footer-studio {
   display: inline-flex;

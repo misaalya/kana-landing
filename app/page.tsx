@@ -96,12 +96,8 @@ export default function Home() {
 
 
       <footer>
-        <span className="footer-name">misaalya · muhammad fikri</span>
-        <span className="footer-studio">
-          <span>VVO Labs</span>
-          <span aria-hidden="true">/</span>
-          <span>Hagoi Teknologi</span>
-        </span>
+        <span>© 2026 misaalya · muhammad fikri</span>
+        <span className="footer-studio">MIT License</span>
       </footer>
 
       <div className="toast" data-visible={copied} role="status" aria-live="polite">
