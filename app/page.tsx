@@ -31,6 +31,11 @@ export default function Home() {
         </a>
       </header>
 
+      <div className="heart-scene" aria-hidden="true">
+        <span className="heart-pixel-trail" />
+        <span className="pixel-heart" />
+      </div>
+
       <section className="hero" id="home">
         <h1>
           Your agent,
