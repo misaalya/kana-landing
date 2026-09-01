@@ -52,7 +52,8 @@ a:focus-visible {
   background: var(--background);
 }
 
-.site-shell::before {
+.site-shell::before,
+.site-shell::after {
   content: '';
   position: absolute;
   z-index: 0;
@@ -61,17 +62,38 @@ a:focus-visible {
 }
 
 .site-shell::before {
-  background-image: linear-gradient(
+  background-image: repeating-linear-gradient(
     to right,
-    var(--grid-line) 1px,
-    transparent 1px
-  ), linear-gradient(
-    to bottom,
-    var(--grid-line) 1px,
-    transparent 1px
+    var(--grid-line) 0 1px,
+    transparent 1px 61px,
+    var(--grid-line) 61px 62px,
+    transparent 62px 83px,
+    var(--grid-line) 83px 84px,
+    transparent 84px 144px,
+    var(--grid-line) 144px 145px,
+    transparent 145px 167px
   );
-  background-position: 14px 14px;
-  background-size: 28px 56px;
+  background-position-x: 36px;
+}
+
+.site-shell::after {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 52px,
+    var(--grid-line) 52px 53px
+  );
+  -webkit-mask-image: repeating-linear-gradient(
+    to right,
+    #000 0 61px,
+    transparent 61px 167px
+  );
+  mask-image: repeating-linear-gradient(
+    to right,
+    #000 0 61px,
+    transparent 61px 167px
+  );
+  -webkit-mask-position-x: 36px;
+  mask-position-x: 36px;
 }
 
 .site-header {
