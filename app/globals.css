@@ -381,95 +381,54 @@ footer {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @media (hover: hover) {
-    .hero-title-outline:hover .title-character {
-      animation: title-character-hop 560ms cubic-bezier(0.2, 0.8, 0.2, 1)
-        both;
-      animation-delay: calc(var(--character-index) * 24ms);
-    }
-
-    .hero-title-outline:hover .title-heart {
-      animation: title-heartbeat 680ms cubic-bezier(0.2, 0.8, 0.2, 1) 90ms
-        both;
-    }
+  .hero-title-outline .title-character {
+    animation: title-character-hop 6.5s cubic-bezier(0.2, 0.8, 0.2, 1)
+      infinite;
+    animation-delay: calc(var(--character-index) * 26ms);
   }
 
-  .primary-link {
-    animation: github-nudge 6.5s ease-in-out infinite;
-  }
-
-  .primary-link:hover,
-  .primary-link:focus-visible {
-    animation: none;
+  .hero-title-outline .title-heart {
+    animation: title-heartbeat 6.5s cubic-bezier(0.2, 0.8, 0.2, 1) 104ms
+      infinite;
   }
 }
 
 @keyframes title-character-hop {
   0%,
+  15%,
   100% {
     transform: translateY(0) rotate(var(--character-tilt));
   }
 
-  42% {
+  4% {
     transform: translateY(-0.12em)
       rotate(calc(var(--character-tilt) * -0.55));
   }
 
-  68% {
+  7% {
     transform: translateY(0.025em) rotate(var(--character-tilt));
   }
 }
 
 @keyframes title-heartbeat {
   0%,
+  15%,
   100% {
     transform: scale(1) rotate(0);
     filter: drop-shadow(0 0 0 rgb(255 77 103 / 0%));
   }
 
-  35% {
+  4% {
     transform: scale(1.2) rotate(-5deg);
     filter: drop-shadow(0 0 0.12em rgb(255 77 103 / 38%));
   }
 
-  55% {
+  7% {
     transform: scale(0.94) rotate(3deg);
   }
 
-  74% {
-    transform: scale(1.1) rotate(-2deg);
-  }
-}
-
-@keyframes github-nudge {
-  0%,
-  15%,
-  100% {
-    transform: translateX(0) rotate(0);
-  }
-
-  2% {
-    transform: translateX(-3px) rotate(-2deg);
-  }
-
-  4% {
-    transform: translateX(3px) rotate(2deg);
-  }
-
-  6% {
-    transform: translateX(-3px) rotate(-1.5deg);
-  }
-
-  8% {
-    transform: translateX(3px) rotate(1.5deg);
-  }
-
   10% {
-    transform: translateX(-2px) rotate(-1deg);
-  }
-
-  12% {
-    transform: translateX(2px) rotate(1deg);
+    transform: scale(1.1) rotate(-2deg);
   }
 }
 
