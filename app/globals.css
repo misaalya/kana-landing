@@ -5,7 +5,8 @@
   --muted: #73787d;
   --accent: #81d0ff;
   --accent-hover: #a9e0ff;
-  --background: #ffffff;
+  --background: #fbf9fa;
+  --grid-line: rgb(74 77 82 / 5.5%);
 }
 
 * {
@@ -24,7 +25,7 @@ body {
 
 body {
   height: 100dvh;
-  padding: 8px;
+  padding: 12px;
   color: var(--ink);
   font-family: var(--font-quicksand), sans-serif;
   font-weight: 700;
@@ -47,8 +48,49 @@ a:focus-visible {
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 20px;
   background: var(--background);
+}
+
+.site-shell::before,
+.site-shell::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.site-shell::before {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--grid-line) 0 1px,
+    transparent 1px 58px,
+    var(--grid-line) 58px 59px,
+    transparent 59px 218px
+  );
+  background-position-x: 24px;
+}
+
+.site-shell::after {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 145px,
+    var(--grid-line) 145px 146px
+  );
+  -webkit-mask-image: repeating-linear-gradient(
+    to right,
+    transparent 0 83px,
+    #000 83px 241px,
+    transparent 241px 242px
+  );
+  mask-image: repeating-linear-gradient(
+    to right,
+    transparent 0 83px,
+    #000 83px 241px,
+    transparent 241px 242px
+  );
+  mask-position-x: 0;
 }
 
 .site-header {
@@ -452,11 +494,19 @@ footer {
 
 @media (max-width: 640px) {
   body {
-    padding: 6px;
+    padding: 9px;
   }
 
   .site-shell {
-    border-radius: 14px;
+    border-radius: 16px;
+  }
+
+  .site-shell::before {
+    background-position-x: -40px;
+  }
+
+  .site-shell::after {
+    mask-position-x: -64px;
   }
 
   .site-header {
