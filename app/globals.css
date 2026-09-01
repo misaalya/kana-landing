@@ -6,7 +6,6 @@
   --accent: #81d0ff;
   --accent-hover: #a9e0ff;
   --background: #fbf9fa;
-  --grid-line: rgb(74 77 82 / 7%);
 }
 
 * {
@@ -52,50 +51,6 @@ a:focus-visible {
   background: var(--background);
 }
 
-.site-shell::before,
-.site-shell::after {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-}
-
-.site-shell::before {
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--grid-line) 0 1px,
-    transparent 1px 49px,
-    var(--grid-line) 49px 50px,
-    transparent 50px 67px,
-    var(--grid-line) 67px 68px,
-    transparent 68px 116px,
-    var(--grid-line) 116px 117px,
-    transparent 117px 134px
-  );
-  background-position-x: 29px;
-}
-
-.site-shell::after {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 42px,
-    var(--grid-line) 42px 43px
-  );
-  -webkit-mask-image: repeating-linear-gradient(
-    to right,
-    #000 0 49px,
-    transparent 49px 134px
-  );
-  mask-image: repeating-linear-gradient(
-    to right,
-    #000 0 49px,
-    transparent 49px 134px
-  );
-  -webkit-mask-position-x: 29px;
-  mask-position-x: 29px;
-}
-
 .site-header {
   position: relative;
   z-index: 2;
@@ -129,18 +84,8 @@ a:focus-visible {
   border: 1px solid #66c1f5;
   color: #fff;
   background: var(--accent);
-  box-shadow: 0 3px 0 #66c1f5;
   font-size: 13px;
   text-shadow: 0 1px rgb(30 126 181 / 22%);
-  transition: color 180ms ease, background-color 180ms ease,
-    transform 180ms ease, box-shadow 180ms ease;
-}
-
-.github-link:hover {
-  color: #fff;
-  background: var(--accent-hover);
-  box-shadow: 0 4px 0 #66c1f5;
-  transform: translateY(-1px);
 }
 
 .title-heart {
