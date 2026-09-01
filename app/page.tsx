@@ -3,8 +3,8 @@
 import { useState, type CSSProperties } from 'react';
 
 const installCommand = 'npm install -g kana-alya';
-const outlinedTitle = 'Your agent,';
-const characterTilts = [-3, 1, -1, 2, 0, -2, 1, -1, 2, -1, 3];
+const outlinedTitle = 'Meet Hermes,';
+const characterTilts = [-3, 1, -1, 2, 0, -2, 1, -1, 2, -1, 3, -2];
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -56,12 +56,12 @@ export default function Home() {
               ),
             )}
           </span>
-          <span className="hero-title-solid">with a little soul.</span>
+          <span className="hero-title-solid">with a face and voice.</span>
         </h1>
 
         <p className="hero-copy">
-          A playful interface for Hermes Agent. Install it once, then make
-          every conversation feel a little more alive.
+          A web interface for Hermes with a Live2D avatar and Japanese TTS,
+          while every response stays in your language.
         </p>
 
         <div className="actions">

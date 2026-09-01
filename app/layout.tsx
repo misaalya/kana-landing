@@ -11,16 +11,16 @@ const quicksand = Quicksand({
 export const metadata: Metadata = {
   title: 'kana-ui',
   description:
-    'A playful interface for Hermes Agent. Install kana-alya with npm and bring your agent to life.',
+    'A web interface for Hermes with a Live2D avatar and Japanese TTS, while every response stays in your language.',
   openGraph: {
     title: 'kana-ui',
-    description: 'Your agent, with a little soul.',
+    description: 'Meet Hermes, with a face and voice.',
     type: 'website',
   },
   twitter: {
     card: 'summary',
     title: 'kana-ui',
-    description: 'Your agent, with a little soul.',
+    description: 'Meet Hermes, with a face and voice.',
   },
 };
 
