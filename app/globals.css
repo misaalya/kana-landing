@@ -81,15 +81,21 @@ a:focus-visible {
   gap: 8px;
   border-radius: 999px;
   padding: 10px 15px;
-  color: #102634;
+  border: 1px solid #66c1f5;
+  color: #fff;
   background: var(--accent);
+  box-shadow: 0 3px 0 #66c1f5;
   font-size: 13px;
-  transition: color 180ms ease, background-color 180ms ease;
+  text-shadow: 0 1px rgb(30 126 181 / 22%);
+  transition: color 180ms ease, background-color 180ms ease,
+    transform 180ms ease, box-shadow 180ms ease;
 }
 
 .github-link:hover {
-  color: #102634;
+  color: #fff;
   background: var(--accent-hover);
+  box-shadow: 0 4px 0 #66c1f5;
+  transform: translateY(-1px);
 }
 
 .heart-scene {
@@ -154,6 +160,165 @@ a:focus-visible {
     -18px 18px 0 rgb(129 208 255 / 22%);
 }
 
+.mv-ornaments {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.kana-watermark {
+  position: absolute;
+  top: 17%;
+  left: clamp(24px, 5vw, 82px);
+  color: transparent;
+  font-size: clamp(96px, 10vw, 164px);
+  line-height: 1;
+  letter-spacing: -0.18em;
+  opacity: 0.34;
+  transform: rotate(-8deg);
+  -webkit-text-stroke: 2px var(--accent);
+}
+
+.mv-kicker {
+  position: absolute;
+  top: 106px;
+  left: clamp(30px, 7vw, 118px);
+  border: 1px solid #6dc5f7;
+  padding: 7px 10px 6px;
+  color: #318fca;
+  background: #eef9ff;
+  box-shadow: 4px 4px 0 #ffd45e;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  transform: rotate(-2deg);
+}
+
+.mv-side-note {
+  position: absolute;
+  top: 50%;
+  left: 27px;
+  color: #55b5ee;
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+}
+
+.mv-side-note::before,
+.mv-side-note::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 42px;
+  margin: 10px 0;
+  background: var(--accent);
+}
+
+.dot-matrix {
+  position: absolute;
+  right: clamp(28px, 6vw, 96px);
+  bottom: 92px;
+  width: 126px;
+  height: 90px;
+  background-image: radial-gradient(circle, #81d0ff 2px, transparent 2.5px);
+  background-size: 18px 18px;
+  opacity: 0.48;
+  transform: rotate(-5deg);
+}
+
+.orbit-ring {
+  position: absolute;
+  right: -76px;
+  bottom: -82px;
+  width: 260px;
+  height: 260px;
+  border: 2px dashed rgb(86 186 244 / 48%);
+  border-radius: 50%;
+}
+
+.sparkle {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  color: #ffd45e;
+}
+
+.sparkle::before,
+.sparkle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.sparkle::before {
+  width: 100%;
+  height: 5px;
+}
+
+.sparkle::after {
+  width: 5px;
+  height: 100%;
+}
+
+.sparkle-one {
+  top: 35%;
+  left: 14%;
+  transform: rotate(45deg);
+}
+
+.sparkle-two {
+  right: 25%;
+  bottom: 23%;
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  transform: rotate(45deg);
+}
+
+.equalizer {
+  position: absolute;
+  bottom: 83px;
+  left: clamp(48px, 10vw, 172px);
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 42px;
+  transform: rotate(-4deg);
+}
+
+.equalizer i {
+  display: block;
+  width: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.equalizer i:nth-child(1),
+.equalizer i:nth-child(7) {
+  height: 14px;
+}
+
+.equalizer i:nth-child(2),
+.equalizer i:nth-child(6) {
+  height: 27px;
+}
+
+.equalizer i:nth-child(3),
+.equalizer i:nth-child(5) {
+  height: 19px;
+  background: #ffd45e;
+}
+
+.equalizer i:nth-child(4) {
+  height: 38px;
+}
+
 .hero {
   position: relative;
   z-index: 1;
@@ -174,8 +339,19 @@ h1 {
   text-wrap: balance;
 }
 
-h1 span {
+.hero-title-outline,
+.hero-title-solid {
   display: block;
+}
+
+.hero-title-outline {
+  color: #fff;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 6px var(--accent);
+  text-shadow: 5px 5px 0 rgb(129 208 255 / 18%);
+}
+
+.hero-title-solid {
   padding-top: 8px;
   color: #56baf4;
 }
@@ -305,17 +481,22 @@ h1 span {
   min-height: 52px;
   border-radius: 14px;
   padding: 0 21px;
-  color: #102634;
+  border: 1px solid #66c1f5;
+  color: #fff;
   background: var(--accent);
+  box-shadow: 0 4px 0 #66c1f5;
   font-size: 12px;
   text-decoration: none;
+  text-shadow: 0 1px rgb(30 126 181 / 22%);
   transform-origin: center;
-  transition: transform 180ms ease, background-color 180ms ease;
+  transition: transform 180ms ease, background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .primary-link:hover {
   transform: translateY(-2px);
   background: var(--accent-hover);
+  box-shadow: 0 6px 0 #66c1f5;
 }
 
 footer {
@@ -369,6 +550,22 @@ footer {
     animation: heart-float 4.8s steps(2, end) infinite;
   }
 
+  .sparkle {
+    animation: sparkle-pulse 2.8s steps(2, end) infinite;
+  }
+
+  .orbit-ring {
+    animation: orbit-turn 28s linear infinite;
+  }
+
+  .equalizer i {
+    animation: equalizer-beat 1.2s steps(3, end) infinite alternate;
+  }
+
+  .equalizer i:nth-child(2n) {
+    animation-delay: -0.6s;
+  }
+
   .primary-link {
     animation: github-nudge 6.5s ease-in-out infinite;
   }
@@ -376,6 +573,29 @@ footer {
   .primary-link:hover,
   .primary-link:focus-visible {
     animation: none;
+  }
+}
+
+@keyframes sparkle-pulse {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes orbit-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes equalizer-beat {
+  to {
+    transform: scaleY(0.45);
   }
 }
 
@@ -476,12 +696,53 @@ footer {
     display: none;
   }
 
+  .kana-watermark {
+    top: 18%;
+    left: -12px;
+    font-size: 92px;
+    opacity: 0.2;
+  }
+
+  .mv-kicker {
+    top: 85px;
+    left: 18px;
+    padding: 6px 8px 5px;
+    font-size: 7px;
+  }
+
+  .mv-side-note,
+  .orbit-ring,
+  .equalizer {
+    display: none;
+  }
+
+  .dot-matrix {
+    right: -26px;
+    bottom: 72px;
+    opacity: 0.28;
+  }
+
+  .sparkle-one {
+    top: 34%;
+    left: 5%;
+  }
+
+  .sparkle-two {
+    right: 8%;
+    bottom: 28%;
+  }
+
   .hero {
     margin-top: clamp(78px, 12vh, 110px);
   }
 
   h1 {
     font-size: clamp(43px, 13vw, 62px);
+  }
+
+  .hero-title-outline {
+    -webkit-text-stroke-width: 4px;
+    text-shadow: 3px 3px 0 rgb(129 208 255 / 18%);
   }
 
   .hero-copy {

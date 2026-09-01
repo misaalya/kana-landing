@@ -36,10 +36,29 @@ export default function Home() {
         <span className="pixel-heart" />
       </div>
 
+      <div className="mv-ornaments" aria-hidden="true">
+        <span className="kana-watermark">かな</span>
+        <span className="mv-kicker">KANA / HERMES / 01</span>
+        <span className="mv-side-note">YOUR AGENT · YOUR RHYTHM</span>
+        <span className="dot-matrix" />
+        <span className="orbit-ring" />
+        <span className="sparkle sparkle-one" />
+        <span className="sparkle sparkle-two" />
+        <span className="equalizer">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+      </div>
+
       <section className="hero" id="home">
         <h1>
-          Your agent,
-          <span>with a little soul.</span>
+          <span className="hero-title-outline">Your agent,</span>
+          <span className="hero-title-solid">with a little soul.</span>
         </h1>
 
         <p className="hero-copy">
