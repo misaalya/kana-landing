@@ -6,7 +6,7 @@
   --accent: #81d0ff;
   --accent-hover: #a9e0ff;
   --background: #fbf9fa;
-  --grid-line: rgb(74 77 82 / 5.5%);
+  --grid-line: rgb(74 77 82 / 7%);
 }
 
 * {
@@ -65,35 +65,35 @@ a:focus-visible {
   background-image: repeating-linear-gradient(
     to right,
     var(--grid-line) 0 1px,
-    transparent 1px 61px,
-    var(--grid-line) 61px 62px,
-    transparent 62px 83px,
-    var(--grid-line) 83px 84px,
-    transparent 84px 144px,
-    var(--grid-line) 144px 145px,
-    transparent 145px 167px
+    transparent 1px 49px,
+    var(--grid-line) 49px 50px,
+    transparent 50px 67px,
+    var(--grid-line) 67px 68px,
+    transparent 68px 116px,
+    var(--grid-line) 116px 117px,
+    transparent 117px 134px
   );
-  background-position-x: 36px;
+  background-position-x: 29px;
 }
 
 .site-shell::after {
   background-image: repeating-linear-gradient(
     to bottom,
-    transparent 0 52px,
-    var(--grid-line) 52px 53px
+    transparent 0 42px,
+    var(--grid-line) 42px 43px
   );
   -webkit-mask-image: repeating-linear-gradient(
     to right,
-    #000 0 61px,
-    transparent 61px 167px
+    #000 0 49px,
+    transparent 49px 134px
   );
   mask-image: repeating-linear-gradient(
     to right,
-    #000 0 61px,
-    transparent 61px 167px
+    #000 0 49px,
+    transparent 49px 134px
   );
-  -webkit-mask-position-x: 36px;
-  mask-position-x: 36px;
+  -webkit-mask-position-x: 29px;
+  mask-position-x: 29px;
 }
 
 .site-header {
