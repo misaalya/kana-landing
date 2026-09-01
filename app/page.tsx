@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 
 const installCommand = 'npm install -g kana-alya';
+const outlinedTitle = 'Your agent,';
+const characterTilts = [-3, 1, -1, 2, 0, -2, 1, -1, 2, -1, 3];
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -31,33 +33,29 @@ export default function Home() {
         </a>
       </header>
 
-      <div className="heart-scene" aria-hidden="true">
-        <span className="heart-pixel-trail" />
-        <span className="pixel-heart" />
-      </div>
-
-      <div className="mv-ornaments" aria-hidden="true">
-        <span className="kana-watermark">かな</span>
-        <span className="mv-kicker">KANA / HERMES / 01</span>
-        <span className="mv-side-note">YOUR AGENT · YOUR RHYTHM</span>
-        <span className="dot-matrix" />
-        <span className="orbit-ring" />
-        <span className="sparkle sparkle-one" />
-        <span className="sparkle sparkle-two" />
-        <span className="equalizer">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-        </span>
-      </div>
-
       <section className="hero" id="home">
         <h1>
-          <span className="hero-title-outline">Your agent,</span>
+          <span className="hero-title-outline" aria-label={outlinedTitle}>
+            {outlinedTitle.split('').map((character, index) =>
+              character === ' ' ? (
+                <span className="title-heart" key="title-heart" aria-hidden="true" />
+              ) : (
+                <span
+                  className="title-character"
+                  key={`${character}-${index}`}
+                  aria-hidden="true"
+                  style={
+                    {
+                      '--character-index': index,
+                      '--character-tilt': `${characterTilts[index]}deg`,
+                    } as CSSProperties
+                  }
+                >
+                  {character}
+                </span>
+              ),
+            )}
+          </span>
           <span className="hero-title-solid">with a little soul.</span>
         </h1>
 
@@ -95,6 +93,7 @@ export default function Home() {
           </a>
         </div>
       </section>
+
 
       <footer>
         <span className="footer-name">misaalya · muhammad fikri</span>
