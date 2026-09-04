@@ -6,6 +6,7 @@
   --accent: #81d0ff;
   --accent-hover: #a9e0ff;
   --background: #fbf9fa;
+  --line-light: #eef1f3;
 }
 
 * {
@@ -46,6 +47,8 @@ a:focus-visible {
   border-radius: 28px;
   background: var(--background);
   box-shadow: 0 4px 32px rgb(0 0 0 / 6%);
+  background-image: radial-gradient(rgb(0 0 0 / 2.5%) 0.7px, transparent 0.7px);
+  background-size: 24px 24px;
 }
 
 .site-header {
@@ -57,6 +60,7 @@ a:focus-visible {
   width: min(1180px, calc(100% - 48px));
   height: 82px;
   margin: 0 auto;
+  border-bottom: 1px solid var(--line-light);
 }
 
 .brand,
@@ -287,6 +291,26 @@ h1 {
   margin: 56px auto 0;
 }
 
+.video-label {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.video-label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1px solid #e4e8eb;
+  border-radius: 999px;
+  color: var(--muted);
+  background: #f6f7f8;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .video-frame {
   position: relative;
   width: 100%;
@@ -296,6 +320,11 @@ h1 {
   background: #f0f2f5;
   border: 1px solid #e4e8eb;
   box-shadow: 0 1px 6px rgb(0 0 0 / 4%);
+  transition: box-shadow 240ms ease;
+}
+
+.video-frame:hover {
+  box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
 }
 
 .video-poster {
@@ -308,6 +337,33 @@ h1 {
   color: var(--muted);
   font-size: 14px;
   font-weight: 600;
+  background: linear-gradient(135deg, #f6f8fa 0%, #eef1f3 100%);
+}
+
+.video-play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.video-play::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border: 8px solid transparent;
+  border-left: 13px solid #fff;
+  border-right: 0;
+}
+
+.video-frame:hover .video-play {
+  transform: scale(1.1);
+  background: var(--accent-hover);
 }
 
 .actions {
@@ -445,10 +501,11 @@ footer {
   gap: 12px;
   width: min(1180px, calc(100% - 48px));
   margin: 80px auto 0;
-  padding: 0 0 32px;
+  padding: 24px 0 32px;
   color: rgb(23 25 27 / 48%);
   font-size: 10px;
   letter-spacing: 0.04em;
+  border-top: 1px solid var(--line-light);
 }
 
 
@@ -648,6 +705,17 @@ footer {
 
   .video-frame {
     border-radius: 14px;
+  }
+
+  .video-play {
+    width: 44px;
+    height: 44px;
+  }
+
+  .video-play::after {
+    border-width: 7px;
+    border-left-width: 11px;
+    margin-left: 2px;
   }
 
   .footer-studio {

@@ -101,9 +101,12 @@ export default function Home() {
       </section>
 
       <section className="video-demo">
+        <div className="video-label">
+          <span>demo</span>
+        </div>
         <div className="video-frame">
           <div className="video-poster">
-            kana-hermes demo
+            <div className="video-play" />
           </div>
         </div>
       </section>
