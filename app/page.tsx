@@ -207,6 +207,107 @@ export default function Home() {
             width={880}
           />
         </div>
+
+        <section
+          aria-labelledby="about-kana"
+          className="relative z-10 mx-auto mb-20 w-[min(1000px,calc(100%_-_48px))] border-t border-[#e7ebee] pt-[clamp(48px,7vw,76px)] max-sm:mb-14 max-sm:w-[calc(100%_-_32px)] max-sm:pt-10"
+        >
+          <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-x-16 gap-y-6 max-md:grid-cols-1">
+            <div>
+              <p className="m-0 text-[10px] font-bold uppercase tracking-[0.16em] text-[#56baf4]">
+                Kana + Hermes
+              </p>
+              <h2
+                className="m-0 mt-4 max-w-[430px] text-balance text-[clamp(30px,4.4vw,52px)] leading-[1.04] tracking-[-0.055em]"
+                id="about-kana"
+              >
+                One agent. A more expressive interface.
+              </h2>
+            </div>
+
+            <div className="max-w-[570px] text-[15px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-sm max-sm:leading-[1.75]">
+              <p className="m-0">
+                Kana is a local visual-novel interface and launcher for an
+                existing Hermes Agent installation. Hermes remains the only
+                agent, so its reasoning, tools, memory, sessions, and context
+                are never replaced or duplicated.
+              </p>
+              <p className="m-0 mt-4">
+                Kana adds a Live2D conversation surface, Japanese speech,
+                multilingual subtitles, and a browser workspace around the
+                official <code className="text-[0.9em] text-[#303438]">hermes serve</code>{' '}
+                runtime.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-[clamp(48px,7vw,72px)] grid grid-cols-3 divide-x divide-[#e7ebee] border-y border-[#e7ebee] max-md:grid-cols-1 max-md:divide-x-0 max-md:divide-y">
+            <article className="py-8 pr-8 max-md:px-0 max-md:py-7">
+              <p className="m-0 text-[10px] tracking-[0.12em] text-[#56baf4]">
+                01
+              </p>
+              <h3 className="m-0 mt-4 text-xl tracking-[-0.035em]">
+                Every Hermes capability
+              </h3>
+              <p className="m-0 mt-3 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                Web search, terminal and file access, MCP servers, subagents,
+                slash commands, approvals, memory, and session controls all
+                continue to run through Hermes.
+              </p>
+            </article>
+
+            <article className="px-8 py-8 max-md:px-0 max-md:py-7">
+              <p className="m-0 text-[10px] tracking-[0.12em] text-[#56baf4]">
+                02
+              </p>
+              <h3 className="m-0 mt-4 text-xl tracking-[-0.035em]">
+                Live2D with a voice
+              </h3>
+              <p className="m-0 mt-3 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                Responsive Live2D avatars pair with Japanese TTS, lip sync,
+                optional local Qwen3-TTS voice cloning, or an OpenAI-compatible
+                speech provider.
+              </p>
+            </article>
+
+            <article className="py-8 pl-8 max-md:px-0 max-md:py-7">
+              <p className="m-0 text-[10px] tracking-[0.12em] text-[#56baf4]">
+                03
+              </p>
+              <h3 className="m-0 mt-4 text-xl tracking-[-0.035em]">
+                Local by default
+              </h3>
+              <p className="m-0 mt-3 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                Conversations and imported avatar models stay local, while
+                Hermes session tokens and speech-provider credentials stay out
+                of the browser.
+              </p>
+            </article>
+          </div>
+
+          <div className="flex items-end justify-between gap-10 border-b border-[#e7ebee] py-8 max-md:flex-col max-md:items-start max-md:gap-5 max-sm:py-7">
+            <div className="max-w-[650px]">
+              <h3 className="m-0 text-xl tracking-[-0.035em]">
+                Install once, start with <code className="text-[0.9em] text-[#56baf4]">kana</code>.
+              </h3>
+              <p className="m-0 mt-3 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                The global npm package includes the prebuilt web runtime. It
+                can find a compatible Hermes service or start the installed{' '}
+                <code className="text-[0.9em] text-[#303438]">hermes serve</code>{' '}
+                process automatically. The current release supports Linux x64
+                with glibc and Node.js 22.13 or newer.
+              </p>
+            </div>
+            <a
+              className="shrink-0 text-xs text-[#303438] underline decoration-[#81d0ff] decoration-2 underline-offset-4 transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
+              href="https://github.com/misaalya/kana-hermes#installation"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read the setup guide ↗
+            </a>
+          </div>
+        </section>
       </section>
 
       <div
