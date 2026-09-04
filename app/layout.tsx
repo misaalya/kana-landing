@@ -1,11 +1,18 @@
 import type { Metadata } from 'next';
-import { Quicksand } from 'next/font/google';
+import { M_PLUS_Rounded_1c, Quicksand } from 'next/font/google';
 import './globals.css';
 
 const quicksand = Quicksand({
   variable: '--font-quicksand',
   subsets: ['latin'],
   weight: ['600', '700'],
+});
+
+const kanaJapanese = M_PLUS_Rounded_1c({
+  variable: '--font-kana-jp',
+  weight: ['700'],
+  preload: false,
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -30,8 +37,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={quicksand.variable + ' antialiased'}>{children}</body>
+    <html lang="en" className="h-full">
+      <body
+        className={`${quicksand.variable} ${kanaJapanese.variable} min-h-dvh overflow-x-hidden bg-linear-to-b from-[#56baf4] to-[#6fc9ff] p-5 font-[family-name:var(--font-quicksand)] font-bold text-[#17191b] antialiased max-sm:p-[9px]`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
