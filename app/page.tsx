@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState, type CSSProperties } from 'react';
 
 const installCommand = 'npm install -g kana-alya';
@@ -65,10 +66,13 @@ export default function Home() {
       >
 
         <div className="relative z-10 mx-auto mt-[clamp(78px,13vh,140px)] flex w-[min(850px,calc(100%_-_40px))] flex-col items-center text-center [@media(max-height:720px)]:mt-[68px] max-sm:mt-[clamp(72px,11vh,96px)]">
-          <h1 className="m-0 text-balance text-[clamp(48px,6vw,78px)] leading-[0.98] tracking-[-0.065em] max-sm:text-[clamp(43px,13vw,62px)]">
+          <h1
+            aria-label="Kana UI: a waifu user interface for Hermes Agent"
+            className="m-0 text-balance text-[clamp(48px,6vw,78px)] leading-[0.98] tracking-[-0.065em] max-sm:text-[clamp(43px,13vw,62px)]"
+          >
             <span
+              aria-hidden="true"
               className="isolate block tracking-[-0.075em] text-white [paint-order:stroke_fill] [-webkit-text-stroke:9px_#81d0ff] max-sm:[-webkit-text-stroke:6px_#81d0ff]"
-              aria-label={outlinedTitle}
             >
               {outlinedTitle.split('').map((character, index) =>
                 character === ' ' ? (
@@ -98,7 +102,7 @@ export default function Home() {
                 ),
               )}
             </span>
-            <span className="block pt-0.5">
+            <span aria-hidden="true" className="block pt-0.5">
   {(() => {
     const words = 'waifu user interface'.split(' ');
     return words.map((word, wi) => {
@@ -194,10 +198,13 @@ export default function Home() {
         </div>
 
         <div className="kana-reveal kana-reveal-demo relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-14 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-10">
-          <img
-            alt="kana-ui demo"
+          <Image
+            alt="Kana UI running Hermes Agent with a Live2D avatar"
             className="block w-full rounded-2xl bg-white transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_14px_40px_rgb(86_186_244/0.18)]"
+            height={495}
             src="/demo.gif"
+            unoptimized
+            width={880}
           />
         </div>
       </section>
