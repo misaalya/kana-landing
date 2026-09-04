@@ -34,6 +34,12 @@ export default function Home() {
       </header>
 
       <section className="hero" id="home">
+        <div className="hero-heart-deco" aria-hidden="true" />
+        <div className="hero-corner hero-corner-tl" aria-hidden="true" />
+        <div className="hero-corner hero-corner-br" aria-hidden="true" />
+        <span className="pixel-diamond pixel-diamond-1" aria-hidden="true" />
+        <span className="pixel-diamond pixel-diamond-2" aria-hidden="true" />
+        <span className="pixel-diamond pixel-diamond-3" aria-hidden="true" />
         <h1>
           <span className="hero-title-outline" aria-label={outlinedTitle}>
             {outlinedTitle.split('').map((character, index) =>
@@ -94,6 +100,13 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="video-demo">
+        <div className="video-frame">
+          <div className="video-poster">
+            kana-hermes demo
+          </div>
+        </div>
+      </section>
 
       <footer>
         <span>© 2026 misaalya · muhammad fikri</span>
