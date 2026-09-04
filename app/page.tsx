@@ -9,12 +9,12 @@ const wuiTilts = [-2, 1, 3, -1, 2, 0, -3, 1, -1, 2, -2, 1, 0, -3, 2, -1, 1, 2];
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
-
   async function copyInstallCommand() {
     await navigator.clipboard.writeText(installCommand);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2200);
   }
+
 
   return (
     <main className="relative min-h-[calc(100dvh-40px)] overflow-hidden rounded-[28px] bg-[#fbf9fa] text-[#17191b] shadow-[0_4px_32px_rgb(0_0_0/0.06)] max-sm:min-h-[calc(100dvh-18px)] max-sm:rounded-2xl">
@@ -102,9 +102,15 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-[23px] max-w-[620px] text-balance text-[clamp(14px,1.5vw,17px)] font-semibold leading-[1.65] tracking-[-0.015em] text-[#73787d] [@media(max-height:720px)]:mt-[17px] max-sm:mt-5 max-sm:max-w-[430px] max-sm:text-sm">
-            A web interface for Hermes with a Live2D avatar and Japanese TTS.{' '}
-            <span className="text-[#303438]">Anything Hermes can do, Kana can do too</span>{' '}
-            — while every response stays in your language.
+            A web interface for Hermes with a Live2D avatar and Japanese TTS,
+            while every response stays in your language.
+          </p>
+
+          <p className="m-0 mt-[13px] text-balance text-[clamp(15px,1.8vw,20px)] font-bold leading-[1.5] tracking-[-0.02em] text-[#303438] [@media(max-height:720px)]:mt-[11px] max-sm:mt-2.5 max-sm:text-[15px]">
+            Full parity with Hermes: every{' '}
+            <span className="text-[#56baf4]">capability</span>, every{' '}
+            <span className="text-[#56baf4]">tool</span>, every{' '}
+            <span className="text-[#56baf4]">agent</span> skill.
           </p>
 
           <div className="mt-[29px] flex w-full items-stretch justify-center gap-2.5 [@media(max-height:720px)]:mt-[21px] max-sm:flex-col max-sm:items-center">
@@ -176,6 +182,30 @@ export default function Home() {
 
       <footer className="mx-auto flex w-[min(1180px,calc(100%_-_48px))] flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[#eef1f3] pb-8 pt-6 text-[11px] text-[#9aa1a7] max-sm:w-[calc(100%_-_32px)] max-sm:justify-center max-sm:text-center">
         <span>© 2026 misaalya</span>
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+          <span>
+            Art{' '}
+            <a
+              className="text-[#73787d] no-underline transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
+              href="https://x.com/koahri1"
+              target="_blank"
+              rel="noreferrer"
+            >
+              @koahri1
+            </a>
+          </span>
+          <span>
+            Live2D{' '}
+            <a
+              className="text-[#73787d] no-underline transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
+              href="https://x.com/MedL2D"
+              target="_blank"
+              rel="noreferrer"
+            >
+              @MedL2D
+            </a>
+          </span>
+        </div>
         <a
           className="inline-flex items-center gap-1.5 text-[#73787d] no-underline transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
           href="https://reelva.me"

@@ -23,11 +23,13 @@ export const metadata: Metadata = {
     title: 'kana-ui',
     description: 'Meet Hermes, with a face and voice.',
     type: 'website',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'kana-ui demo' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'kana-ui',
     description: 'Meet Hermes, with a face and voice.',
+    images: ['/og.png'],
   },
 };
 
