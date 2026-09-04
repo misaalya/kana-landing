@@ -102,8 +102,9 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-[23px] max-w-[620px] text-balance text-[clamp(14px,1.5vw,17px)] font-semibold leading-[1.65] tracking-[-0.015em] text-[#73787d] [@media(max-height:720px)]:mt-[17px] max-sm:mt-5 max-sm:max-w-[430px] max-sm:text-sm">
-            A web interface for Hermes with a Live2D avatar and Japanese TTS,
-            while every response stays in your language.
+            A web interface for Hermes with a Live2D avatar and Japanese TTS.{' '}
+            <span className="text-[#303438]">Anything Hermes can do, Kana can do too</span>{' '}
+            — while every response stays in your language.
           </p>
 
           <div className="mt-[29px] flex w-full items-stretch justify-center gap-2.5 [@media(max-height:720px)]:mt-[21px] max-sm:flex-col max-sm:items-center">
@@ -164,7 +165,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-10 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-6">
+        <div className="relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-14 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-10">
           <img
             alt="kana-ui demo"
             className="block w-full rounded-2xl bg-white"
@@ -172,6 +173,19 @@ export default function Home() {
           />
         </div>
       </section>
+
+      <footer className="mx-auto flex w-[min(1180px,calc(100%_-_48px))] flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[#eef1f3] pb-8 pt-6 text-[11px] text-[#9aa1a7] max-sm:w-[calc(100%_-_32px)] max-sm:justify-center max-sm:text-center">
+        <span>© 2026 misaalya</span>
+        <a
+          className="inline-flex items-center gap-1.5 text-[#73787d] no-underline transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
+          href="https://reelva.me"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Built by reelva.me
+          <span aria-hidden="true">↗</span>
+        </a>
+      </footer>
 
       <div
         className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 translate-y-[18px] rounded-full border border-[#dfe4e7] bg-[#f6f7f8] px-[13px] py-[9px] text-[10px] text-[#25292c] opacity-0 shadow-sm transition-[opacity,transform] duration-200 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"
