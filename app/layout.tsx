@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${quicksand.variable} ${kanaJapanese.variable} min-h-dvh overflow-x-hidden bg-linear-to-b from-[#56baf4] to-[#6fc9ff] p-5 font-[family-name:var(--font-quicksand)] font-bold text-[#17191b] antialiased max-sm:p-[9px]`}
+        className={`${quicksand.variable} ${kanaJapanese.variable} flex h-dvh flex-col overflow-hidden bg-linear-to-b from-[#56baf4] to-[#6fc9ff] p-5 font-[family-name:var(--font-quicksand)] font-bold text-[#17191b] antialiased max-sm:p-[9px]`}
       >
         {children}
       </body>
