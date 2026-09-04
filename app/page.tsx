@@ -2,7 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, type CSSProperties } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react';
 
 import { faqEntries } from './site';
 
@@ -10,6 +17,323 @@ const installCommand = 'npm install -g kana-alya';
 const outlinedTitle = 'かな Hermes,';
 const characterTilts = [-1, 2, 0, -2, 1, -1, 2, -1, 3, -2];
 const wuiTilts = [-2, 1, 3, -1, 2, 0, -3, 1, -1, 2, -2, 1, 0, -3, 2, -1, 1, 2];
+
+type DraggableCardProps = {
+  children: ReactNode;
+  className: string;
+  floatSeed: number;
+  rotation?: number;
+  slotClassName?: string;
+};
+
+function DraggableCard({
+  children,
+  className,
+  floatSeed,
+  rotation = 0,
+  slotClassName = '',
+}: DraggableCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const floatRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const floatFrameRef = useRef<number | null>(null);
+  const motionRef = useRef({
+    dragging: false,
+    pointerId: -1,
+    pointerX: 0,
+    pointerY: 0,
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+    rotation: 0,
+    velocityX: 0,
+    velocityY: 0,
+    velocityRotation: 0,
+    lastX: 0,
+    lastY: 0,
+    lastTime: 0,
+  });
+  const [dragging, setDragging] = useState(false);
+  const [motionActive, setMotionActive] = useState(false);
+
+  function renderTransform(x: number, y: number, dragRotation: number, scale = 1) {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.setProperty('--card-x', `${x}px`);
+    card.style.setProperty('--card-y', `${y}px`);
+    card.style.setProperty('--card-drag-rotation', `${dragRotation}deg`);
+    card.style.setProperty('--card-scale', String(scale));
+  }
+
+  function stopAnimation() {
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+  }
+
+  function springHome() {
+    const motion = motionRef.current;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      Object.assign(motion, {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        velocityX: 0,
+        velocityY: 0,
+        velocityRotation: 0,
+      });
+      renderTransform(0, 0, 0);
+      setMotionActive(false);
+      return;
+    }
+
+    let previousTime = performance.now();
+    const tick = (time: number) => {
+      const state = motionRef.current;
+      const delta = Math.min((time - previousTime) / 1000, 0.032);
+      previousTime = time;
+
+      const stiffness = 175;
+      const damping = 17;
+      const rotationStiffness = 210;
+      const rotationDamping = 18;
+
+      state.velocityX += (-stiffness * state.x - damping * state.velocityX) * delta;
+      state.velocityY += (-stiffness * state.y - damping * state.velocityY) * delta;
+      state.velocityRotation +=
+        (-rotationStiffness * state.rotation - rotationDamping * state.velocityRotation) * delta;
+      state.x += state.velocityX * delta;
+      state.y += state.velocityY * delta;
+      state.rotation += state.velocityRotation * delta;
+
+      const distance = Math.hypot(state.x, state.y);
+      renderTransform(
+        state.x,
+        state.y,
+        state.rotation,
+        1 + Math.min(distance / 5000, 0.012),
+      );
+
+      const settled =
+        distance < 0.2 &&
+        Math.abs(state.rotation) < 0.02 &&
+        Math.hypot(state.velocityX, state.velocityY) < 7 &&
+        Math.abs(state.velocityRotation) < 0.5;
+
+      if (settled) {
+        Object.assign(state, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          velocityX: 0,
+          velocityY: 0,
+          velocityRotation: 0,
+        });
+        renderTransform(0, 0, 0);
+        frameRef.current = null;
+        setMotionActive(false);
+        return;
+      }
+
+      frameRef.current = requestAnimationFrame(tick);
+    };
+
+    frameRef.current = requestAnimationFrame(tick);
+  }
+
+  function startDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.button !== 0 || !event.isPrimary) return;
+
+    stopAnimation();
+    const motion = motionRef.current;
+    motion.dragging = true;
+    motion.pointerId = event.pointerId;
+    motion.pointerX = event.clientX;
+    motion.pointerY = event.clientY;
+    motion.startX = motion.x;
+    motion.startY = motion.y;
+    motion.lastX = motion.x;
+    motion.lastY = motion.y;
+    motion.lastTime = performance.now();
+    motion.velocityX = 0;
+    motion.velocityY = 0;
+    motion.velocityRotation = 0;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragging(true);
+    setMotionActive(true);
+    renderTransform(motion.x, motion.y, motion.rotation, 1.018);
+  }
+
+  function moveDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const motion = motionRef.current;
+    if (!motion.dragging || event.pointerId !== motion.pointerId) return;
+
+    event.preventDefault();
+    const now = performance.now();
+    const elapsed = Math.max(now - motion.lastTime, 1);
+    const x = motion.startX + event.clientX - motion.pointerX;
+    const y = motion.startY + event.clientY - motion.pointerY;
+    const nextRotation = Math.max(-7, Math.min(7, x / 36));
+
+    motion.velocityX = motion.velocityX * 0.55 + ((x - motion.lastX) / elapsed) * 450;
+    motion.velocityY = motion.velocityY * 0.55 + ((y - motion.lastY) / elapsed) * 450;
+    motion.velocityRotation =
+      motion.velocityRotation * 0.55 + ((nextRotation - motion.rotation) / elapsed) * 450;
+    motion.x = x;
+    motion.y = y;
+    motion.rotation = nextRotation;
+    motion.lastX = x;
+    motion.lastY = y;
+    motion.lastTime = now;
+    renderTransform(x, y, nextRotation, 1.018);
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const motion = motionRef.current;
+    if (!motion.dragging || event.pointerId !== motion.pointerId) return;
+
+    motion.dragging = false;
+    motion.velocityX = Math.max(-1800, Math.min(1800, motion.velocityX));
+    motion.velocityY = Math.max(-1800, Math.min(1800, motion.velocityY));
+    motion.velocityRotation = Math.max(-180, Math.min(180, motion.velocityRotation));
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    setDragging(false);
+    springHome();
+  }
+
+  useEffect(() => () => stopAnimation(), []);
+
+  useEffect(() => {
+    const float = floatRef.current;
+    if (!float) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const compactViewport = window.matchMedia('(max-width: 639px)');
+    let randomState = (floatSeed + 1) * 0x9e3779b1;
+    const random = () => {
+      randomState ^= randomState << 13;
+      randomState ^= randomState >>> 17;
+      randomState ^= randomState << 5;
+      return (randomState >>> 0) / 4294967296;
+    };
+    const initialAngle = random() * Math.PI * 2;
+    const state = {
+      x: (random() - 0.5) * 8,
+      y: (random() - 0.5) * 8,
+      velocityX: Math.cos(initialAngle) * 0.9,
+      velocityY: Math.sin(initialAngle) * 0.9,
+      targetVelocityX: 0,
+      targetVelocityY: 0,
+      rotation: 0,
+      nextTurn: 0,
+    };
+    let previousTime = performance.now();
+
+    const chooseDirection = (time: number) => {
+      const angle = random() * Math.PI * 2;
+      const speed = 0.8 + random() * 1.25;
+      state.targetVelocityX = Math.cos(angle) * speed;
+      state.targetVelocityY = Math.sin(angle) * speed;
+      state.nextTurn = time + 2800 + random() * 4200;
+    };
+
+    chooseDirection(previousTime);
+
+    const tick = (time: number) => {
+      const delta = Math.min((time - previousTime) / 1000, 0.05);
+      previousTime = time;
+
+      if (reducedMotion.matches) {
+        float.style.transform = 'none';
+        floatFrameRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      if (!motionRef.current.dragging && frameRef.current === null) {
+        if (time >= state.nextTurn) chooseDirection(time);
+
+        const maxRadius = compactViewport.matches ? 14 : 18;
+        const softBoundary = compactViewport.matches ? 9 : 12;
+        const distance = Math.hypot(state.x, state.y);
+        const directionBlend = Math.min(delta * 0.34, 1);
+        state.velocityX += (state.targetVelocityX - state.velocityX) * directionBlend;
+        state.velocityY += (state.targetVelocityY - state.velocityY) * directionBlend;
+
+        if (distance > softBoundary) {
+          const boundaryStrength = ((distance - softBoundary) / (maxRadius - softBoundary)) ** 2;
+          state.velocityX -= (state.x / distance) * boundaryStrength * delta * 2.8;
+          state.velocityY -= (state.y / distance) * boundaryStrength * delta * 2.8;
+        }
+
+        const speed = Math.hypot(state.velocityX, state.velocityY);
+        if (speed > 2.2) {
+          state.velocityX = (state.velocityX / speed) * 2.2;
+          state.velocityY = (state.velocityY / speed) * 2.2;
+        }
+
+        state.x += state.velocityX * delta;
+        state.y += state.velocityY * delta;
+
+        const nextDistance = Math.hypot(state.x, state.y);
+        if (nextDistance > maxRadius) {
+          const normalX = state.x / nextDistance;
+          const normalY = state.y / nextDistance;
+          state.x = normalX * maxRadius;
+          state.y = normalY * maxRadius;
+          const outwardVelocity = state.velocityX * normalX + state.velocityY * normalY;
+          if (outwardVelocity > 0) {
+            state.velocityX -= normalX * outwardVelocity * 1.55;
+            state.velocityY -= normalY * outwardVelocity * 1.55;
+          }
+          state.nextTurn = time;
+        }
+
+        const targetRotation = Math.max(
+          -0.5,
+          Math.min(0.5, state.velocityX * 0.16 - state.velocityY * 0.06),
+        );
+        state.rotation += (targetRotation - state.rotation) * Math.min(delta * 0.7, 1);
+        float.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) rotate(${state.rotation}deg)`;
+      }
+
+      floatFrameRef.current = requestAnimationFrame(tick);
+    };
+
+    floatFrameRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (floatFrameRef.current !== null) {
+        cancelAnimationFrame(floatFrameRef.current);
+        floatFrameRef.current = null;
+      }
+    };
+  }, [floatSeed]);
+
+  return (
+    <div
+      className={`kana-card-slot relative ${slotClassName}`}
+      data-motion-active={motionActive}
+    >
+      <div className="kana-card-float h-full" ref={floatRef}>
+        <div
+          className={`kana-card-drag relative h-full cursor-grab select-none ${className}`}
+          data-dragging={dragging}
+          onPointerCancel={endDrag}
+          onPointerDown={startDrag}
+          onPointerMove={moveDrag}
+          onPointerUp={endDrag}
+          ref={cardRef}
+          style={{ '--card-base-rotation': `${rotation}deg` } as CSSProperties}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [copied, setCopied] = useState(false);
@@ -212,7 +536,7 @@ export default function Home() {
         <div className="kana-reveal kana-reveal-demo relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-14 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-10">
           <Image
             alt="Kana UI running Hermes Agent with a Live2D avatar"
-            className="block w-full rounded-2xl bg-white transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_14px_40px_rgb(86_186_244/0.18)]"
+            className="block w-full rounded-2xl bg-white"
             height={495}
             src="/demo.gif"
             unoptimized
@@ -224,107 +548,120 @@ export default function Home() {
           aria-labelledby="about-kana"
           className="relative z-10 mx-auto mb-20 w-[min(1060px,calc(100%_-_48px))] pt-[clamp(48px,7vw,80px)] max-sm:mb-14 max-sm:w-[calc(100%_-_32px)] max-sm:pt-10"
         >
-          <div className="grid gap-x-16 gap-y-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]">
-            <div className="md:sticky md:top-[110px] md:self-start">
-              <p className="m-0 text-[10px] font-bold uppercase tracking-[0.18em] text-[#56baf4]">
-                Kana × Hermes
-              </p>
-              <h2
-                className="m-0 mt-5 max-w-[420px] text-balance text-[clamp(34px,4.6vw,56px)] leading-[1.04] tracking-[-0.055em] max-sm:max-w-none"
-                id="about-kana"
-              >
-                A different face for
-                the same intelligence.
-              </h2>
-              <p className="mt-6 max-w-[360px] text-[14px] font-semibold leading-[1.8] text-[#73787d] max-sm:max-w-[560px]">
-                Kana is a local visual-novel interface for an existing Hermes
-                Agent installation, not a second agent.
-              </p>
-              <a
-                className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-[12px] border border-[#389dd4] bg-[#56baf4] px-4 text-xs text-white no-underline shadow-sm transition-colors duration-200 hover:bg-[#6fc9ff] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#56baf4]"
-                href="https://github.com/misaalya/kana-hermes#installation"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Read the setup guide
-                <span aria-hidden="true">↗</span>
-              </a>
-            </div>
+          <h2
+            className="sr-only m-0"
+            id="about-kana"
+          >
+            About Kana
+          </h2>
 
-            <div>
-              <p className="m-0 text-[15px] font-semibold leading-[1.85] text-[#73787d] max-sm:text-sm max-sm:leading-[1.8]">
-                Hermes keeps owning reasoning, web search, terminal and file
-                access, MCP servers, subagents, slash commands, approvals,
-                memory, sessions, and context management. Kana wraps that
-                engine in a game-style conversation surface: responsive
+          <div className="grid gap-5 sm:grid-cols-12 max-sm:grid-cols-1">
+            <DraggableCard
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              floatSeed={11}
+              rotation={-0.35}
+              slotClassName="kana-card-featured sm:col-span-7"
+            >
+              <h3 className="m-0 text-[15px] tracking-[-0.03em]">
+                Every Hermes capability
+              </h3>
+              <p className="m-0 mt-2.5 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                Reasoning, web search, terminal and file access, MCP
+                servers, subagents, slash commands, approvals, memory,
+                sessions, and context management — all still Hermes.
+              </p>
+            </DraggableCard>
+
+            <DraggableCard
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              floatSeed={23}
+              rotation={0.8}
+              slotClassName="kana-card-left sm:col-span-5"
+            >
+              <h3 className="m-0 text-[15px] tracking-[-0.03em]">
+                A face and a voice
+              </h3>
+              <p className="m-0 mt-2.5 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
                 Live2D avatars with lip sync, a Japanese-speaking persona,
                 multilingual subtitles, and local Qwen3-TTS with optional
                 voice cloning or an OpenAI-compatible speech provider.
               </p>
+            </DraggableCard>
 
-              <dl className="m-0 mt-10 border-t border-[#e7ebee]">
-                <div className="grid grid-cols-[140px_minmax(0,1fr)] gap-8 border-b border-[#e7ebee] py-6 max-sm:grid-cols-1 max-sm:gap-2">
-                  <dt className="text-[11px] uppercase tracking-[0.12em] text-[#56baf4]">
-                    Local data
-                  </dt>
-                  <dd className="m-0 text-[13px] font-semibold leading-[1.8] text-[#73787d]">
-                    Conversation history and imported avatar models stay on
-                    your machine. Session tokens and speech credentials stay
-                    out of browser storage.
-                  </dd>
-                </div>
+            <DraggableCard
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              floatSeed={37}
+              rotation={-0.7}
+              slotClassName="kana-card-right sm:col-span-4"
+            >
+              <h3 className="m-0 text-[15px] tracking-[-0.03em]">
+                Local by default
+              </h3>
+              <p className="m-0 mt-2.5 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
+                History and imported avatar models stay on your machine;
+                session tokens and speech credentials stay out of browser
+                storage.
+              </p>
+            </DraggableCard>
 
-                <div className="grid grid-cols-[140px_minmax(0,1fr)] gap-8 border-b border-[#e7ebee] py-6 max-sm:grid-cols-1 max-sm:gap-2">
-                  <dt className="text-[11px] uppercase tracking-[0.12em] text-[#56baf4]">
+            <DraggableCard
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              floatSeed={53}
+              rotation={0.25}
+              slotClassName="kana-card-bottom sm:col-span-8"
+            >
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+                <div className="sm:w-[min(55%,440px)]">
+                  <h3 className="m-0 text-[15px] tracking-[-0.03em]">
                     Install
-                  </dt>
-                  <dd className="m-0 text-[13px] font-semibold leading-[1.8] text-[#73787d]">
+                  </h3>
+                  <p className="m-0 mt-2.5 text-[13px] font-semibold leading-[1.75] text-[#73787d]">
                     <code className="text-[#303438]">npm install -g kana-alya</code>,
                     then run <code className="text-[#303438]">kana</code>. It
                     finds a compatible Hermes service or starts the installed
                     Hermes process automatically.
-                  </dd>
+                  </p>
                 </div>
-
-                <div className="grid grid-cols-[140px_minmax(0,1fr)] gap-8 py-6 max-sm:grid-cols-1 max-sm:gap-2">
-                  <dt className="text-[11px] uppercase tracking-[0.12em] text-[#56baf4]">
-                    Requires
-                  </dt>
-                  <dd className="m-0 text-[13px] font-semibold leading-[1.8] text-[#73787d]">
-                    An existing Hermes Agent installation. The current release
-                    supports Linux x64 with glibc and Node.js 22.13 or newer.
-                  </dd>
+                <div className="flex-1 rounded-xl bg-[#f6f7f8] px-4 py-3 text-xs text-[#9aa1a7] sm:mt-1">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-[#56baf4]">
+                    Requirements
+                  </span>
+                  <ul className="m-0 mt-1.5 list-none p-0 leading-[1.8]">
+                    <li>Existing Hermes Agent</li>
+                    <li>Linux x64 with glibc</li>
+                    <li>Node.js 22.13+</li>
+                  </ul>
                 </div>
-              </dl>
-
-              <h3 className="mt-12 text-[clamp(22px,2.6vw,30px)] leading-tight tracking-[-0.045em]">
-                Questions about{' '}
-                <span className="text-[#56baf4]">Kana</span>
-              </h3>
-
-              <div className="mt-5">
-                {faqEntries.map((entry, index) => (
-                  <details
-                    className={`group open:pb-6 ${index === faqEntries.length - 1 ? 'border-y' : 'border-t'} border-[#e7ebee]`}
-                    name="kana-faq"
-                    key={entry.question}
-                  >
-                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[clamp(15px,1.8vw,18px)] font-bold tracking-[-0.03em] transition-colors hover:text-[#56baf4] [&::-webkit-details-marker]:hidden max-sm:py-4">
-                      <h4 className="m-0 text-inherit">{entry.question}</h4>
-                      <span
-                        aria-hidden="true"
-                        className="grid size-7 shrink-0 place-items-center rounded-full bg-[#f2faff] text-lg leading-none font-normal text-[#56baf4] transition-transform duration-300 group-open:rotate-45 max-sm:size-6"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="m-0 max-w-[600px] pb-1 text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
-                      {entry.answer}
-                    </p>
-                  </details>
-                ))}
               </div>
-            </div>
+            </DraggableCard>
+          </div>
+
+          <h3 className="mt-[clamp(44px,7vw,64px)] text-center text-[clamp(22px,2.6vw,30px)] leading-tight tracking-[-0.045em]">
+            Questions about{' '}
+            <span className="text-[#56baf4]">Kana</span>
+          </h3>
+
+          <div className="mt-5">
+            {faqEntries.map((entry, index) => (
+              <details
+                className={`group open:pb-6 ${index === faqEntries.length - 1 ? 'border-y' : 'border-t'} border-[#e7ebee]`}
+                name="kana-faq"
+                key={entry.question}
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[clamp(15px,1.8vw,18px)] font-bold tracking-[-0.03em] transition-colors hover:text-[#56baf4] [&::-webkit-details-marker]:hidden max-sm:py-4">
+                  <h4 className="m-0 text-inherit">{entry.question}</h4>
+                  <span
+                    aria-hidden="true"
+                    className="grid size-7 shrink-0 place-items-center rounded-full bg-[#f2faff] text-lg leading-none font-normal text-[#56baf4] transition-transform duration-300 group-open:rotate-45 max-sm:size-6"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="m-0 max-w-[600px] pb-1 text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
+                  {entry.answer}
+                </p>
+              </details>
+            ))}
           </div>
         </section>
       </section>
@@ -423,6 +760,24 @@ export default function Home() {
 
       <style>{`
         @media (prefers-reduced-motion: no-preference) {
+          .kana-label {
+            animation: kana-label-wiggle 4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+          }
+        }
+
+        @keyframes kana-label-wiggle {
+          0%, 92%, 100% {
+            transform: rotate(0deg);
+          }
+          94% {
+            transform: rotate(-1.5deg) scale(1.03);
+          }
+          97% {
+            transform: rotate(1.5deg) scale(1.03);
+          }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
           .kana-title-character {
             animation: kana-title-character-hop 6.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
             animation-delay: calc(var(--character-index) * 26ms);
@@ -452,6 +807,64 @@ export default function Home() {
 
           .kana-reveal-demo {
             animation-delay: 0.5s;
+          }
+
+          .kana-card-slot {
+            opacity: 0;
+            transform: translateY(24px);
+            animation: kana-card-pop 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+          }
+
+          .kana-card-featured { animation-delay: 0.1s; }
+          .kana-card-left { animation-delay: 0.22s; }
+          .kana-card-right { animation-delay: 0.34s; }
+          .kana-card-bottom { animation-delay: 0.46s; }
+        }
+
+        @keyframes kana-card-pop {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .kana-card-slot[data-motion-active='true'] {
+          z-index: 30;
+        }
+
+        .kana-card-float {
+          transform-origin: center;
+          will-change: transform;
+        }
+
+        .kana-card-drag {
+          touch-action: none;
+          transform: translate3d(var(--card-x, 0px), var(--card-y, 0px), 0)
+            rotate(calc(var(--card-base-rotation, 0deg) + var(--card-drag-rotation, 0deg)))
+            scale(var(--card-scale, 1));
+          transform-origin: center;
+          will-change: transform;
+        }
+
+        .kana-card-drag[data-dragging='true'] {
+          cursor: grabbing;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+          .kana-card-drag::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: 0 24px 60px -18px rgba(86, 186, 244, 0.18);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+
+          .kana-card-drag:hover::after,
+          .kana-card-drag[data-dragging='true']::after {
+            opacity: 1;
           }
         }
 
