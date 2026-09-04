@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { M_PLUS_Rounded_1c, Quicksand } from 'next/font/google';
 import './globals.css';
-import { siteDescription, siteName, siteTitle, siteUrl } from './site';
+import { faqEntries, siteDescription, siteName, siteTitle, siteUrl } from './site';
 
 const quicksand = Quicksand({
   variable: '--font-quicksand',
@@ -75,6 +75,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  other: {
+    'theme-color': '#56baf4',
+  },
 };
 
 const structuredData = {
@@ -112,6 +115,18 @@ const structuredData = {
         name: 'misaalya',
         url: 'https://github.com/misaalya',
       },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/#faq`,
+      mainEntity: faqEntries.map((entry) => ({
+        '@type': 'Question',
+        name: entry.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: entry.answer,
+        },
+      })),
     },
   ],
 };
