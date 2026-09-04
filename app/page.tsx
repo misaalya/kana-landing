@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   useEffect,
@@ -22,6 +21,7 @@ type DraggableCardProps = {
   children: ReactNode;
   className: string;
   floatSeed: number;
+  revealDelay?: number;
   rotation?: number;
   slotClassName?: string;
 };
@@ -30,6 +30,7 @@ function DraggableCard({
   children,
   className,
   floatSeed,
+  revealDelay = 0,
   rotation = 0,
   slotClassName = '',
 }: DraggableCardProps) {
@@ -315,7 +316,9 @@ function DraggableCard({
   return (
     <div
       className={`kana-card-slot relative ${slotClassName}`}
+      data-home-reveal
       data-motion-active={motionActive}
+      style={{ '--reveal-delay': `${revealDelay}ms` } as CSSProperties}
     >
       <div className="kana-card-float h-full" ref={floatRef}>
         <div
@@ -338,6 +341,54 @@ function DraggableCard({
 export default function Home() {
   const [copied, setCopied] = useState(false);
   const [footerHidden, setFooterHidden] = useState(false);
+  const faqRefs = useRef<(HTMLDetailsElement | null)[]>([]);
+
+  function setFaqOpen(element: HTMLDetailsElement, open: boolean) {
+    const content = element.querySelector<HTMLDivElement>('[data-faq-content]');
+    if (!content) return;
+    element.dataset.faqOpen = String(open);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      element.open = open;
+      element.dataset.faqClosing = 'false';
+      content.style.gridTemplateRows = open ? '1fr' : '0fr';
+      return;
+    }
+
+    if (open) {
+      element.dataset.faqClosing = 'false';
+      element.open = true;
+      content.style.gridTemplateRows = '0fr';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          content.style.gridTemplateRows = '1fr';
+        });
+      });
+      return;
+    }
+
+    if (!element.open) return;
+    element.dataset.faqClosing = 'true';
+    content.style.gridTemplateRows = '0fr';
+    window.setTimeout(() => {
+      if (element.dataset.faqClosing === 'true') {
+        element.open = false;
+        element.dataset.faqClosing = 'false';
+      }
+    }, 320);
+  }
+
+  function handleFaqClick(index: number) {
+    const element = faqRefs.current[index];
+    if (!element) return;
+    const isOpen = element.dataset.faqOpen === 'true';
+    faqRefs.current.forEach((other, otherIndex) => {
+      if (otherIndex !== index && other && other.dataset.faqOpen === 'true') {
+        setFaqOpen(other, false);
+      }
+    });
+    setFaqOpen(element, !isOpen);
+  }
 
   async function copyInstallCommand() {
     await navigator.clipboard.writeText(installCommand);
@@ -362,6 +413,40 @@ export default function Home() {
     }
     scroller.addEventListener('scroll', onScroll, { passive: true });
     return () => scroller.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const scroller = document.getElementById('home');
+    if (!scroller) return;
+
+    const elements = Array.from(
+      scroller.querySelectorAll<HTMLElement>('[data-home-reveal]'),
+    );
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      elements.forEach((element) => {
+        element.dataset.revealVisible = 'true';
+      });
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const element = entry.target as HTMLElement;
+          element.dataset.revealVisible = 'true';
+          observer.unobserve(element);
+        });
+      },
+      {
+        root: scroller,
+        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.12,
+      },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
   }, []);
 
 
@@ -410,33 +495,44 @@ export default function Home() {
               aria-hidden="true"
               className="isolate block tracking-[-0.075em] text-white [paint-order:stroke_fill] [-webkit-text-stroke:9px_#81d0ff] max-sm:[-webkit-text-stroke:6px_#81d0ff]"
             >
-              {outlinedTitle.split('').map((character, index) =>
-                character === ' ' ? (
-                  <svg
-                    className="kana-title-heart mx-[0.15em] inline-block h-[0.56em] w-[0.68em] origin-center align-[-0.035em] text-[#ff4d67]"
-                    viewBox="0 0 10 9"
-                    fill="currentColor"
-                    key="title-heart"
-                    aria-hidden="true"
-                  >
-                    <path d="M1 0h3v1h2V0h3v1h1v4H9v1H8v1H7v1H6v1H4V8H3V7H2V6H1V5H0V1h1V0Z" />
-                  </svg>
-                ) : (
-                  <span
-                    className={`kana-title-character relative z-10 inline-block origin-[50%_68%] rotate-[var(--character-tilt)] ${/[\u3040-\u30ff]/.test(character) ? 'font-[family-name:var(--font-kana-jp)]' : ''}`}
-                    key={`${character}-${index}`}
-                    aria-hidden="true"
-                    style={
-                      {
-                        '--character-index': String(index),
-                        '--character-tilt': `${characterTilts[index]}deg`,
-                      } as CSSProperties
-                    }
-                  >
-                    {character}
-                  </span>
-                ),
-              )}
+              {outlinedTitle.split(' ').map((word, wordIndex) => (
+                <span
+                  key={`word-${wordIndex}`}
+                  className={`inline-block whitespace-nowrap ${wordIndex > 0 ? 'ml-[0.12em]' : ''}`}
+                >
+                  {word.split('').map((character, index) => {
+                    const globalIndex = outlinedTitle
+                      .split(' ')
+                      .slice(0, wordIndex)
+                      .reduce((sum, w) => sum + w.length, 0) + index;
+                    return character === ' ' ? null : (
+                      <span
+                        className={`kana-title-character relative z-10 inline-block origin-[50%_68%] rotate-[var(--character-tilt)] ${/[\u3040-\u30ff]/.test(character) ? 'font-[family-name:var(--font-kana-jp)]' : ''}`}
+                        key={`${character}-${globalIndex}`}
+                        aria-hidden="true"
+                        style={
+                          {
+                            '--character-index': String(globalIndex),
+                            '--character-tilt': `${characterTilts[globalIndex]}deg`,
+                          } as CSSProperties
+                        }
+                      >
+                        {character}
+                      </span>
+                    );
+                  })}
+                  {wordIndex === 0 && (
+                    <svg
+                      className="kana-title-heart ml-[0.08em] mr-[0.02em] inline-block h-[0.56em] w-[0.68em] origin-center align-[-0.035em] text-[#ff4d67]"
+                      viewBox="0 0 10 9"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M1 0h3v1h2V0h3v1h1v4H9v1H8v1H7v1H6v1H4V8H3V7H2V6H1V5H0V1h1V0Z" />
+                    </svg>
+                  )}
+                </span>
+              ))}
             </span>
             <span aria-hidden="true" className="block pt-0.5">
   {(() => {
@@ -444,7 +540,7 @@ export default function Home() {
     return words.map((word, wi) => {
       const offset = words.slice(0, wi).reduce((sum, w) => sum + w.length, 0);
       return (
-        <span key={`wiu-${wi}`} className="inline-block ml-2 first:ml-0">
+        <span key={`wiu-${wi}`} className="inline-block whitespace-nowrap ml-2 first:ml-0">
           {word.split('').map((c, ci) => (
             <span
               key={`wiu-${wi}-${ci}`}
@@ -533,15 +629,24 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="kana-reveal kana-reveal-demo relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-14 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-10">
-          <Image
-            alt="Kana UI running Hermes Agent with a Live2D avatar"
+        <div
+          className="relative z-10 mx-auto mt-[clamp(40px,6vh,64px)] mb-14 w-[min(880px,calc(100%_-_40px))] max-sm:mt-9 max-sm:mb-10"
+          data-home-reveal
+        >
+          <video
+            aria-label="Kana UI running Hermes Agent with a Live2D avatar"
+            autoPlay
             className="block w-full rounded-2xl bg-white"
-            height={495}
-            src="/demo.gif"
-            unoptimized
+            height={494}
+            loop
+            muted
+            playsInline
+            preload="metadata"
             width={880}
-          />
+          >
+            <source src="/demo.webm" type="video/webm" />
+            <source src="/demo.mp4" type="video/mp4" />
+          </video>
         </div>
 
         <section
@@ -557,8 +662,9 @@ export default function Home() {
 
           <div className="grid gap-5 sm:grid-cols-12 max-sm:grid-cols-1">
             <DraggableCard
-              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] data-[dragging=true]:border-[#81d0ff] data-[dragging=true]:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
               floatSeed={11}
+              revealDelay={0}
               rotation={-0.35}
               slotClassName="kana-card-featured sm:col-span-7"
             >
@@ -573,8 +679,9 @@ export default function Home() {
             </DraggableCard>
 
             <DraggableCard
-              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] data-[dragging=true]:border-[#81d0ff] data-[dragging=true]:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
               floatSeed={23}
+              revealDelay={90}
               rotation={0.8}
               slotClassName="kana-card-left sm:col-span-5"
             >
@@ -589,8 +696,9 @@ export default function Home() {
             </DraggableCard>
 
             <DraggableCard
-              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] data-[dragging=true]:border-[#81d0ff] data-[dragging=true]:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
               floatSeed={37}
+              revealDelay={120}
               rotation={-0.7}
               slotClassName="kana-card-right sm:col-span-4"
             >
@@ -605,8 +713,9 @@ export default function Home() {
             </DraggableCard>
 
             <DraggableCard
-              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
+              className="rounded-2xl border-2 border-[#e7ebee] bg-white p-6 shadow-[0_3px_0_#e7ebee] transition-[border-color,box-shadow] duration-300 hover:border-[#81d0ff] hover:shadow-[0_3px_0_#81d0ff] data-[dragging=true]:border-[#81d0ff] data-[dragging=true]:shadow-[0_3px_0_#81d0ff] max-sm:p-5"
               floatSeed={53}
+              revealDelay={210}
               rotation={0.25}
               slotClassName="kana-card-bottom sm:col-span-8"
             >
@@ -636,25 +745,65 @@ export default function Home() {
             </DraggableCard>
           </div>
 
-          <div className="mt-[clamp(44px,7vw,64px)] grid items-start gap-3 sm:grid-cols-2 max-sm:grid-cols-1">
-            {faqEntries.map((entry) => (
-              <details
-                className="group self-start rounded-2xl border border-[#e7ebee] bg-white p-5 transition-colors duration-200 open:bg-[#fbf9fa] max-sm:p-4"
-                key={entry.question}
+          <div className="mt-[clamp(44px,7vw,64px)] flex flex-col gap-3 sm:flex-row sm:items-start">
+            {[
+              faqEntries.slice(0, Math.ceil(faqEntries.length / 2)),
+              faqEntries.slice(Math.ceil(faqEntries.length / 2)),
+            ].map((columnEntries, columnIndex) => (
+              <div
+                className="flex flex-1 flex-col gap-3"
+                key={columnIndex}
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[clamp(15px,1.7vw,17px)] font-bold tracking-[-0.03em] [&::-webkit-details-marker]:hidden">
-                  <h4 className="m-0 leading-snug">{entry.question}</h4>
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#f2faff] text-sm leading-none font-normal text-[#56baf4] transition-transform duration-300 group-open:rotate-45 max-sm:size-5"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="m-0 mt-3 max-w-[520px] text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
-                  {entry.answer}
-                </p>
-              </details>
+                {columnEntries.map((entry, index) => {
+                  const globalIndex =
+                    columnIndex * Math.ceil(faqEntries.length / 2) + index;
+                  return (
+                    <details
+                      className="group rounded-2xl border border-[#e7ebee] bg-white p-5 transition-colors duration-200 data-[faq-open=true]:bg-[#fbf9fa] max-sm:p-4"
+                      data-faq-closing="false"
+                      data-faq-open="false"
+                      data-home-reveal
+                      key={entry.question}
+                      ref={(element) => {
+                        faqRefs.current[globalIndex] = element;
+                      }}
+                      style={
+                        {
+                          '--reveal-delay': `${(globalIndex % 2) * 90}ms`,
+                        } as CSSProperties
+                      }
+                    >
+                      <summary
+                        className="flex cursor-pointer list-none items-center justify-between gap-4 text-[clamp(15px,1.7vw,17px)] font-bold tracking-[-0.03em] [&::-webkit-details-marker]:hidden"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleFaqClick(globalIndex);
+                        }}
+                      >
+                        <h4 className="m-0 leading-snug">{entry.question}</h4>
+                        <span
+                          aria-hidden="true"
+                          className="mt-0.5 grid size-6 shrink-0 place-items-center text-[#56baf4] transition-transform duration-300 group-data-[faq-open=true]:rotate-180 max-sm:size-5"
+                        >
+                          <svg className="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M4 6l4 4 4-4" />
+                          </svg>
+                        </span>
+                      </summary>
+                      <div
+                        className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out"
+                        data-faq-content
+                      >
+                        <div className="overflow-hidden">
+                          <p className="m-0 mt-3 max-w-[520px] text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
+                            {entry.answer}
+                          </p>
+                        </div>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
             ))}
           </div>
         </section>
@@ -802,23 +951,22 @@ export default function Home() {
           .kana-reveal-demo {
             animation-delay: 0.5s;
           }
-
-          .kana-card-slot {
-            opacity: 0;
-            transform: translateY(24px);
-            animation: kana-card-pop 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-          }
-
-          .kana-card-featured { animation-delay: 0.1s; }
-          .kana-card-left { animation-delay: 0.22s; }
-          .kana-card-right { animation-delay: 0.34s; }
-          .kana-card-bottom { animation-delay: 0.46s; }
         }
 
-        @keyframes kana-card-pop {
-          to {
+        @media (prefers-reduced-motion: no-preference) {
+          [data-home-reveal] {
+            opacity: 0;
+            transform: translateY(24px) scale(0.985);
+            transition:
+              opacity 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background-color 0.2s ease;
+            transition-delay: var(--reveal-delay, 0ms);
+          }
+
+          [data-home-reveal][data-reveal-visible='true'] {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
           }
         }
 
