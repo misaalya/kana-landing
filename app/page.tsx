@@ -636,28 +636,22 @@ export default function Home() {
             </DraggableCard>
           </div>
 
-          <h3 className="mt-[clamp(44px,7vw,64px)] text-center text-[clamp(22px,2.6vw,30px)] leading-tight tracking-[-0.045em]">
-            Questions about{' '}
-            <span className="text-[#56baf4]">Kana</span>
-          </h3>
-
-          <div className="mt-5">
-            {faqEntries.map((entry, index) => (
+          <div className="mt-[clamp(44px,7vw,64px)] grid items-start gap-3 sm:grid-cols-2 max-sm:grid-cols-1">
+            {faqEntries.map((entry) => (
               <details
-                className={`group open:pb-6 ${index === faqEntries.length - 1 ? 'border-y' : 'border-t'} border-[#e7ebee]`}
-                name="kana-faq"
+                className="group self-start rounded-2xl border border-[#e7ebee] bg-white p-5 transition-colors duration-200 open:bg-[#fbf9fa] max-sm:p-4"
                 key={entry.question}
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[clamp(15px,1.8vw,18px)] font-bold tracking-[-0.03em] transition-colors hover:text-[#56baf4] [&::-webkit-details-marker]:hidden max-sm:py-4">
-                  <h4 className="m-0 text-inherit">{entry.question}</h4>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[clamp(15px,1.7vw,17px)] font-bold tracking-[-0.03em] [&::-webkit-details-marker]:hidden">
+                  <h4 className="m-0 leading-snug">{entry.question}</h4>
                   <span
                     aria-hidden="true"
-                    className="grid size-7 shrink-0 place-items-center rounded-full bg-[#f2faff] text-lg leading-none font-normal text-[#56baf4] transition-transform duration-300 group-open:rotate-45 max-sm:size-6"
+                    className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#f2faff] text-sm leading-none font-normal text-[#56baf4] transition-transform duration-300 group-open:rotate-45 max-sm:size-5"
                   >
                     +
                   </span>
                 </summary>
-                <p className="m-0 max-w-[600px] pb-1 text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
+                <p className="m-0 mt-3 max-w-[520px] text-[13px] font-semibold leading-[1.8] text-[#73787d] max-sm:text-xs">
                   {entry.answer}
                 </p>
               </details>
@@ -705,7 +699,7 @@ export default function Home() {
           target="_blank"
           rel="noreferrer"
         >
-          Built by reelva.me
+          Supported by reelva.me
           <span aria-hidden="true">↗</span>
         </a>
         <nav
@@ -737,7 +731,7 @@ export default function Home() {
           </a>
           <span aria-hidden="true" className="text-[#d5dade]">·</span>
           <a
-            aria-label="Built by reelva.me"
+            aria-label="Supported by reelva.me"
             className="text-[#73787d] no-underline transition-colors hover:text-[#56baf4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#56baf4]"
             href="https://reelva.me"
             target="_blank"
